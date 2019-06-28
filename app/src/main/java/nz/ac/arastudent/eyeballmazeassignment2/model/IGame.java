@@ -18,6 +18,7 @@ public interface IGame {
 	void setGoalCount(String goalCount);
 	String getMoveCount();
 	void setMoveCount(String moveCount);
+	void setMovesLeft(String moveCount);
 	void setMazeCharacter(int x, int y, String item);
 	String[][] getGameMap();
 	Integer getMovesLeft();

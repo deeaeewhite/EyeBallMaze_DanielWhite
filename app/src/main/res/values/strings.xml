@@ -1,13 +1,8 @@
 <resources>
     <string name="app_name">Eye Ball Maze Assignment 2</string>
     <string name="button">Button</string>
-    <string name="player">Player</string>
-    <string name="move_counter">Move Counter:</string>
-    <string name="goal_counter">GoalCounter:</string>
-    <string name="buttonSize">100</string>
+    <string name="buttonLength">100</string>
     <integer name="buttonSize">150</integer>
     <string name="gameWon">Contratulation you have solved the maze!</string>
     <string name="gameLost">Better luck next time!</string>
-    <string name="textView">TextView</string>
-    <string name="toggleButton">ToggleButton</string>
 </resources>

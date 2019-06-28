@@ -4,13 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,51 +15,34 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Objects;
-
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.List;
+import java.util.Scanner;
 import nz.ac.arastudent.eyeballmazeassignment2.model.IGame;
 import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     Button[][] buttons = new Button[6][4];
-    MediaPlayer game_song;
-    MediaPlayer winner_music;
-    MediaPlayer loser_music;
-    ToggleButton sound_toggle;
 
     SharedPreferences sharedPreferences = null;
 
     public IGame myModel = new Model();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        game_song=MediaPlayer.create(this, R.raw.lifeforce);
-        game_song.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        game_song.setLooping(true);
-        game_song.start();
-
-        sound_toggle = findViewById(R.id.sound_toggle);
-        sound_toggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(sound_toggle.isChecked()){
-                    unmute();
-                }
-                else{
-                    mute();
-                }
-            }
-        });
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -72,37 +51,40 @@ public class MainActivity extends AppCompatActivity{
         TextView textView = findViewById(R.id.GoalCounter);
         textView.setText("0");
 
+        TextView movesLeft = findViewById(R.id.movesLeft);
+        movesLeft.setText(myModel.getMovesLeft().toString());
+
 
         //Set button
-        buttons[0][0] = findViewById(R.id.grid00);
-        buttons[0][1] = findViewById(R.id.grid10);
-        buttons[0][2] = findViewById(R.id.grid20);
-        buttons[0][3] = findViewById(R.id.grid30);
+        buttons[0][0] = (Button)findViewById(R.id.grid00);
+        buttons[0][1] = (Button)findViewById(R.id.grid10);
+        buttons[0][2] = (Button)findViewById(R.id.grid20);
+        buttons[0][3] = (Button)findViewById(R.id.grid30);
 
-        buttons[1][0] = findViewById(R.id.grid01);
-        buttons[1][1] = findViewById(R.id.grid11);
-        buttons[1][2] = findViewById(R.id.grid21);
-        buttons[1][3] = findViewById(R.id.grid31);
+        buttons[1][0] = (Button)findViewById(R.id.grid01);
+        buttons[1][1] = (Button)findViewById(R.id.grid11);
+        buttons[1][2] = (Button)findViewById(R.id.grid21);
+        buttons[1][3] = (Button)findViewById(R.id.grid31);
 
-        buttons[2][0] = findViewById(R.id.grid02);
-        buttons[2][1] = findViewById(R.id.grid12);
-        buttons[2][2] = findViewById(R.id.grid22);
-        buttons[2][3] = findViewById(R.id.grid32);
+        buttons[2][0] = (Button)findViewById(R.id.grid02);
+        buttons[2][1] = (Button)findViewById(R.id.grid12);
+        buttons[2][2] = (Button)findViewById(R.id.grid22);
+        buttons[2][3] = (Button)findViewById(R.id.grid32);
 
-        buttons[3][0] = findViewById(R.id.grid03);
-        buttons[3][1] = findViewById(R.id.grid13);
-        buttons[3][2] = findViewById(R.id.grid23);
-        buttons[3][3] = findViewById(R.id.grid33);
+        buttons[3][0] = (Button)findViewById(R.id.grid03);
+        buttons[3][1] = (Button)findViewById(R.id.grid13);
+        buttons[3][2] = (Button)findViewById(R.id.grid23);
+        buttons[3][3] = (Button)findViewById(R.id.grid33);
 
-        buttons[4][0] = findViewById(R.id.grid04);
-        buttons[4][1] = findViewById(R.id.grid14);
-        buttons[4][2] = findViewById(R.id.grid24);
-        buttons[4][3] = findViewById(R.id.grid34);
+        buttons[4][0] = (Button)findViewById(R.id.grid04);
+        buttons[4][1] = (Button)findViewById(R.id.grid14);
+        buttons[4][2] = (Button)findViewById(R.id.grid24);
+        buttons[4][3] = (Button)findViewById(R.id.grid34);
 
-        buttons[5][0] = findViewById(R.id.grid05);
-        buttons[5][1] = findViewById(R.id.grid15);
-        buttons[5][2] = findViewById(R.id.grid25);
-        buttons[5][3] = findViewById(R.id.grid35);
+        buttons[5][0] = (Button)findViewById(R.id.grid05);
+        buttons[5][1] = (Button)findViewById(R.id.grid15);
+        buttons[5][2] = (Button)findViewById(R.id.grid25);
+        buttons[5][3] = (Button)findViewById(R.id.grid35);
 
 
         this.initialiseGame();
@@ -110,8 +92,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void readALevel() {
         try {
-            InputStream inputStream;
-            inputStream = getResources().openRawResource(R.raw.level);
+            InputStream inputStream = getResources().openRawResource(R.raw.level);
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
@@ -132,37 +113,12 @@ public class MainActivity extends AppCompatActivity{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         myModel.setMoveCount("0");
     }
 
-    private void mute() {
-        //mute audio
-        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-    }
-
-    public void unmute() {
-        //unmute audio
-        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-    }
-
-    public void playWinnerMusic(){
-        winner_music=MediaPlayer.create(this, R.raw.winner);
-        winner_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        winner_music.start();
-    }
-
-    public void playLoserMusic(){
-        loser_music=MediaPlayer.create(this, R.raw.loser);
-        loser_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        loser_music.start();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
-                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
         System.out.println(map);
         String[] rows = map.split(":");
@@ -179,40 +135,41 @@ public class MainActivity extends AppCompatActivity{
             }
             y++;
         }
+
         myModel.setMoveCount(sharedPreferences.getString("movesLeft", "None"));
         myModel.setGoalCount(sharedPreferences.getString("goalsLeft", "None"));
-
+        myModel.setMovesLeft(sharedPreferences.getString("movesLeft", "None"));
         Toast.makeText(MainActivity.this, "Game Loaded!", Toast.LENGTH_SHORT).show();
     }
 
     private void saveLevel() {
         String[][] currentState = myModel.getGameMap();
-        StringBuilder myMap = new StringBuilder();
+        String myMap = "";
 
         for (int y = 0; y < currentState.length; ++y) {
             for (int x = 0; x < currentState[y].length; ++x) {
                 String pos = currentState[y][x];
-                myMap.append(pos);
+                myMap += pos;
                 if (x != currentState[y].length) {
-                    myMap.append(",");
+                    myMap += ",";
                 }
             }
             if (y != currentState.length - 1){
-                myMap.append(":");
+                myMap += ":";
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
-                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
-        editor.putString("theMap", myMap.toString());
+        editor.putString("theMap", myMap);
         editor.apply();
         editor.putString("goalsLeft", myModel.getGoalCount());
         editor.apply();
         editor.putString("movesLeft", myModel.getMoveCount());
         editor.apply();
+
 
         Toast.makeText(MainActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
     }
@@ -225,7 +182,6 @@ public class MainActivity extends AppCompatActivity{
         return super.onCreateOptionsMenu(menu);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -260,6 +216,7 @@ public class MainActivity extends AppCompatActivity{
         int gridHeight = grid.getHeight();
         int height = gridHeight / 6;
 
+
         for(int y = 0; y < this.buttons.length; y++){
             for(int x = 0; x < this.buttons[y].length; x++){
                 Button aButton = this.buttons[y][x];
@@ -271,8 +228,11 @@ public class MainActivity extends AppCompatActivity{
         TextView textView = findViewById(R.id.GoalCounter);
         textView.setText(myModel.getGoalCount());
 
-        TextView moveCounter = findViewById(R.id.moveCounter);
+        TextView moveCounter = findViewById(R.id.MoveCounter);
         moveCounter.setText(myModel.getMoveCount());
+
+        TextView movesLeft = findViewById(R.id.movesLeft);
+        movesLeft.setText(myModel.getMovesLeft().toString());
     }
 
     public void checkMove(int x, int y){
@@ -286,9 +246,9 @@ public class MainActivity extends AppCompatActivity{
             Toast.makeText(getApplicationContext(),
                     "You are already on this position", Toast.LENGTH_SHORT).show();
         }
-       // else if (y < currentY && x < currentX || y > currentY && x > currentX) {
-         //   Toast.makeText(getApplicationContext(),
-           //         "You can only move left, right or forward", Toast.LENGTH_SHORT).show();
+        // else if (y < currentY && x < currentX || y > currentY && x > currentX) {
+        //   Toast.makeText(getApplicationContext(),
+        //         "You can only move left, right or forward", Toast.LENGTH_SHORT).show();
         //}
         else {
             if (y < currentY) {
@@ -311,7 +271,7 @@ public class MainActivity extends AppCompatActivity{
             //check move isn't backwards
             String isBackwards = this.myModel.makeMove(direction, distance);
 
-            if (!isBackwards.equals("")) {
+            if (isBackwards != "") {
                 Toast.makeText(getApplicationContext(),
                         isBackwards, Toast.LENGTH_SHORT).show();
             }
@@ -338,13 +298,14 @@ public class MainActivity extends AppCompatActivity{
         int gridHeight = grid.getHeight();
         int height = gridHeight / 6;
 
-        TextView moveCounter = findViewById(R.id.moveCounter);
+        TextView moveCounter = findViewById(R.id.MoveCounter);
         moveCounter.setText(myModel.getMoveCount());
 
         for(int y = 0; y < this.buttons.length; y++){
             for(int x = 0; x < this.buttons[y].length; x++){
                 Button aButton = this.buttons[y][x];
                 aButton.setText(this.myModel.getItem(x, y));
+
                 final int weirdX = x;
                 final int weirdY = y;
                 aButton.setOnClickListener(new View.OnClickListener() {
@@ -362,7 +323,6 @@ public class MainActivity extends AppCompatActivity{
         builder.setTitle(R.string.gameWon)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playWinnerMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();
@@ -385,7 +345,6 @@ public class MainActivity extends AppCompatActivity{
         builder.setTitle(R.string.gameLost)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playLoserMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();

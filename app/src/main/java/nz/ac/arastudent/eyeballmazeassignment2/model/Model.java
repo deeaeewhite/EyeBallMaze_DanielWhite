@@ -100,6 +100,7 @@ public class Model implements IGame {
 		return Integer.toString(moveCounter);
 	}
 
+	public void setMovesLeft(String movesLeft) { this.movesLeft= Integer.parseInt(movesLeft); }
 	public Integer getMovesLeft(){
 		return movesLeft;
 	}
