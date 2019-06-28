@@ -320,9 +320,7 @@ public class MainActivity extends AppCompatActivity{
 
         GridLayout grid =  findViewById(R.id.GameLayout);
         int gridWidth = grid.getWidth();
-        int width = gridWidth / 10;
         int gridHeight = grid.getHeight();
-        int height = gridHeight / 6;
 
         TextView moveCounter = findViewById(R.id.moveCounter);
         moveCounter.setText(myModel.getMoveCount());
