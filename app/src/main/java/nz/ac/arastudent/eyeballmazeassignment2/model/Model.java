@@ -1,17 +1,7 @@
 package nz.ac.arastudent.eyeballmazeassignment2.model;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Scanner;
-import java.util.logging.Level;
-
-import nz.ac.arastudent.eyeballmazeassignment2.R;
 
 public class Model implements IGame {	
 
@@ -20,7 +10,7 @@ public class Model implements IGame {
 	
 	}
 	
-	public String[][] GameMap =
+	private String[][] GameMap =
 		{
 			{"    ", "    ", "TR G", "    "},
 			{"PB  ", "TY  ", "DY  ", "PG  "},
@@ -30,13 +20,13 @@ public class Model implements IGame {
 			{"    ", "DBU ", "    ", "    "}
 		};
 		
-	public int moveCounter = 0;
-	public int goalCounter = 0;
+	private int moveCounter = 0;
+	private int goalCounter = 0;
 
-	CoOrds player = new CoOrds(0, 0, PlayerDirection.Up);
+	private CoOrds player = new CoOrds(0, 0, PlayerDirection.Up);
 	
-	Shapes currentShape = Shapes.Diamond;
-	Colours currentColour = Colours.Blue;
+	private Shapes currentShape = Shapes.Diamond;
+	private Colours currentColour = Colours.Blue;
 
 	public void setMazeCharacter(int x, int y, String item){
 		GameMap[y][x] = item;
@@ -50,8 +40,7 @@ public class Model implements IGame {
 		int tempGoalCounter = 0;
 		for (int y = 0; y < GameMap.length; ++y){
 			for (int x = 0; x < GameMap[y].length; ++x){
-				String pos = GameMap[y][x];
-				
+
 				//Update the current player position in the process
 				String[] item = GameMap[y][x].split("");
 				StringBuilder sb = new StringBuilder(GameMap[y][x]);
@@ -114,8 +103,8 @@ public class Model implements IGame {
 	}
     
     public Object[] whatsAt(int x, int y){
-    	Object[] out = new Object[]{};
-    	ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(out));
+		Object[] out = new Object[]{};
+		ArrayList<Object> temp = new ArrayList<>(Arrays.asList(out));
     	if(y >= GameMap.length || x > GameMap[0].length || y < 0 || x < 0){
     		temp.add(false);
     	} else {
@@ -135,14 +124,13 @@ public class Model implements IGame {
     	//String[] theirInput = move.split("");
     	Direction direction = Direction.get(move);
 		String out = "Can not move backwards";
-    	int spaces = space;
-    	if (this.isNotMovingBackwards(direction)){
+		if (this.isNotMovingBackwards(direction)){
 	    	moveCounter++;
-	    	if (direction == Direction.Down) { this.moveVertical(spaces, PlayerDirection.Down);}
-	    	if (direction == Direction.Up) { this.moveVertical(-spaces, PlayerDirection.Up);}
+	    	if (direction == Direction.Down) { this.moveVertical(space, PlayerDirection.Down);}
+	    	if (direction == Direction.Up) { this.moveVertical(-space, PlayerDirection.Up);}
 	    	
-	    	if (direction == Direction.Left) { this.moveHorizontal(-spaces, PlayerDirection.Left);}
-	    	if (direction == Direction.Right) { this.moveHorizontal(spaces, PlayerDirection.Right);}
+	    	if (direction == Direction.Left) { this.moveHorizontal(-space, PlayerDirection.Left);}
+	    	if (direction == Direction.Right) { this.moveHorizontal(space, PlayerDirection.Right);}
 			out = "";
 		}
 
@@ -151,7 +139,7 @@ public class Model implements IGame {
     }
     
     private boolean isNotMovingBackwards(Direction direction){
-    	Boolean out = true;
+    	boolean out = true;
     	if(direction.getNumber() + this.player.looking.getNumber() == 0){
     		out = false;
     	}
@@ -268,7 +256,8 @@ public class Model implements IGame {
         {
             final String os = System.getProperty("os.name");
 
-            if (os.contains("Windows"))
+			assert os != null;
+			if (os.contains("Windows"))
             {
                 Runtime.getRuntime().exec("cls");
             }
@@ -291,19 +280,4 @@ public class Model implements IGame {
     	}
     	return result;
     }
-    
-   // public void start() {
-    //	this.updateMaze();
-    //	while (isComplete()){
-    //		this.updateMaze();
-    //
-	  //  	Scanner in = new Scanner(System.in);
-	    //	String s = in.nextLine();
-	    //	this.makeMove(s);
-	    //	System.out.println(this.moveCounter);
-	    //	System.out.println(this.goalCounter);
-	    //	System.out.println(this.goalsSolved);
-	    	//this.clearConsole();
-    	//}
-   // }
 }

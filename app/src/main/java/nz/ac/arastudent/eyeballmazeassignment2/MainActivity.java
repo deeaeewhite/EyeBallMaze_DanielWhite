@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,19 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
+
 import nz.ac.arastudent.eyeballmazeassignment2.model.IGame;
 import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 
@@ -56,42 +48,41 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Set button
-        buttons[0][0] = (Button)findViewById(R.id.grid00);
-        buttons[0][1] = (Button)findViewById(R.id.grid10);
-        buttons[0][2] = (Button)findViewById(R.id.grid20);
-        buttons[0][3] = (Button)findViewById(R.id.grid30);
+        buttons[0][0] = findViewById(R.id.grid00);
+        buttons[0][1] = findViewById(R.id.grid10);
+        buttons[0][2] = findViewById(R.id.grid20);
+        buttons[0][3] = findViewById(R.id.grid30);
 
-        buttons[1][0] = (Button)findViewById(R.id.grid01);
-        buttons[1][1] = (Button)findViewById(R.id.grid11);
-        buttons[1][2] = (Button)findViewById(R.id.grid21);
-        buttons[1][3] = (Button)findViewById(R.id.grid31);
+        buttons[1][0] = findViewById(R.id.grid01);
+        buttons[1][1] = findViewById(R.id.grid11);
+        buttons[1][2] = findViewById(R.id.grid21);
+        buttons[1][3] = findViewById(R.id.grid31);
 
-        buttons[2][0] = (Button)findViewById(R.id.grid02);
-        buttons[2][1] = (Button)findViewById(R.id.grid12);
-        buttons[2][2] = (Button)findViewById(R.id.grid22);
-        buttons[2][3] = (Button)findViewById(R.id.grid32);
+        buttons[2][0] = findViewById(R.id.grid02);
+        buttons[2][1] = findViewById(R.id.grid12);
+        buttons[2][2] = findViewById(R.id.grid22);
+        buttons[2][3] = findViewById(R.id.grid32);
 
-        buttons[3][0] = (Button)findViewById(R.id.grid03);
-        buttons[3][1] = (Button)findViewById(R.id.grid13);
-        buttons[3][2] = (Button)findViewById(R.id.grid23);
-        buttons[3][3] = (Button)findViewById(R.id.grid33);
+        buttons[3][0] = findViewById(R.id.grid03);
+        buttons[3][1] = findViewById(R.id.grid13);
+        buttons[3][2] = findViewById(R.id.grid23);
+        buttons[3][3] = findViewById(R.id.grid33);
 
-        buttons[4][0] = (Button)findViewById(R.id.grid04);
-        buttons[4][1] = (Button)findViewById(R.id.grid14);
-        buttons[4][2] = (Button)findViewById(R.id.grid24);
-        buttons[4][3] = (Button)findViewById(R.id.grid34);
+        buttons[4][0] = findViewById(R.id.grid04);
+        buttons[4][1] = findViewById(R.id.grid14);
+        buttons[4][2] = findViewById(R.id.grid24);
+        buttons[4][3] = findViewById(R.id.grid34);
 
-        buttons[5][0] = (Button)findViewById(R.id.grid05);
-        buttons[5][1] = (Button)findViewById(R.id.grid15);
-        buttons[5][2] = (Button)findViewById(R.id.grid25);
-        buttons[5][3] = (Button)findViewById(R.id.grid35);
+        buttons[5][0] = findViewById(R.id.grid05);
+        buttons[5][1] = findViewById(R.id.grid15);
+        buttons[5][2] = findViewById(R.id.grid25);
+        buttons[5][3] = findViewById(R.id.grid35);
 
 
         this.initialiseGame();
     }
 
     private void readALevel() {
-        final String originalFileSrc = "level.txt";
         try {
             InputStream inputStream;
             inputStream = getResources().openRawResource(R.raw.level);
@@ -119,12 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
-                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
-        String map = sharedPreferences.getString(THE_MAP, "None");
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        String map;
+        map = sharedPreferences.getString(THE_MAP, "None");
 
-        String[] rows = Objects.requireNonNull(sharedPreferences.
-                getString(THE_MAP, "None")).split(":");
+        String[] rows = ":".split(Objects.requireNonNull(sharedPreferences.getString(THE_MAP, "None")));
 
         int y = 0;
         for (String aRow : rows){
@@ -146,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMoves() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
-                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         myModel.setMoveCount(sharedPreferences.getString(MOVES, "None"));
     }
     private void saveLevel() {
@@ -168,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
-                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
@@ -241,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
         Integer[] currentPos = this.myModel.getPlayerLocation();
         int currentX = currentPos[0];
         int currentY = currentPos[1];
-        String direction;
+        String direction = "";
         int distance = 0;
         if (x == currentX && y == currentY){
             Toast.makeText(getApplicationContext(),
@@ -261,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (x < currentX) {
                 direction = "A";
                 distance = currentX - x;
-            } else {
+            } else if (x > currentX) {
                 direction = "D";
                 distance = x - currentX;
             }

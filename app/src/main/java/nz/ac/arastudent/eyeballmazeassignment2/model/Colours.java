@@ -11,7 +11,7 @@ public enum Colours {
 	
 	public final String abbreviation;
 	
-	private static final Map<String, Colours> lookup = new HashMap<String, Colours>();
+	private static final Map<String, Colours> lookup = new HashMap<>();
 	
 	static {
         for (Colours d : Colours.values()) {

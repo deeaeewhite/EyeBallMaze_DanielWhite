@@ -1,5 +1,7 @@
 package nz.ac.arastudent.eyeballmazeassignment2.model;
 
+import android.annotation.SuppressLint;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +14,9 @@ public enum PlayerDirection {
 	public final String abbreviation;
 	public final int number;
 	
-	private static final Map<String, PlayerDirection> lookup = new HashMap<String, PlayerDirection>();
-	private static final Map<Integer, PlayerDirection> lookupInt = new HashMap<Integer, PlayerDirection>();
+	private static final Map<String, PlayerDirection> lookup = new HashMap<>();
+	@SuppressLint("UseSparseArrays")
+    private static final Map<Integer, PlayerDirection> lookupInt = new HashMap<>();
 	
 	static {
         for (PlayerDirection d : PlayerDirection.values()) {
