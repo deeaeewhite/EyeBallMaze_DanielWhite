@@ -3,6 +3,8 @@ package nz.ac.arastudent.eyeballmazeassignment2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import nz.ac.arastudent.eyeballmazeassignment2.model.IGame;
 import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
@@ -114,11 +117,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString(THE_MAP, "None");
 
-        String[] rows = sharedPreferences.getString(THE_MAP, "None").split(":");
+        String[] rows = Objects.requireNonNull(sharedPreferences.
+                getString(THE_MAP, "None")).split(":");
 
         int y = 0;
         for (String aRow : rows){
@@ -140,32 +146,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMoves() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         myModel.setMoveCount(sharedPreferences.getString(MOVES, "None"));
     }
     private void saveLevel() {
         String[][] currentState = myModel.getGameMap();
-        String myMap = "";
+        StringBuilder myMap = new StringBuilder();
 
         for (int y = 0; y < currentState.length; ++y) {
             for (int x = 0; x < currentState[y].length; ++x) {
                 String pos = currentState[y][x];
                 System.out.println(pos + ":");
-                myMap += pos;
+                myMap.append(pos);
                 if (x != currentState[y].length) {
-                    myMap += ",";
+                    myMap.append(",");
                 }
             }
             if (y != currentState.length - 1){
-                myMap += ":";
+                myMap.append(":");
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
-        editor.putString(THE_MAP, myMap);
+        editor.putString(THE_MAP, myMap.toString());
         editor.apply();
         editor.putString(GOALS_LEFT, myModel.getGoalCount());
         editor.apply();
@@ -183,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -232,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         Integer[] currentPos = this.myModel.getPlayerLocation();
         int currentX = currentPos[0];
         int currentY = currentPos[1];
-        String direction = "";
+        String direction;
         int distance = 0;
         if (x == currentX && y == currentY){
             Toast.makeText(getApplicationContext(),
@@ -252,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (x < currentX) {
                 direction = "A";
                 distance = currentX - x;
-            } else if (x > currentX) {
+            } else {
                 direction = "D";
                 distance = x - currentX;
             }
@@ -263,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             //check move isn't backwards
             String isBackwards = this.myModel.makeMove(direction, distance);
 
-            if (isBackwards != "") {
+            if (!isBackwards.equals("")) {
                 Toast.makeText(getApplicationContext(),
                         isBackwards, Toast.LENGTH_SHORT).show();
             }

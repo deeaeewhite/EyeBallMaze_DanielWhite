@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Eye Ball Maze Assignment 2</string>
     <string name="button">Button</string>
+    <string name="player">Player</string>
+    <string name="move_counter">Move Counter:</string>
+    <string name="goalcounter">GoalCounter:</string>
 </resources>

@@ -38,7 +38,7 @@
         android:layout_marginBottom="32dp"
         >
 
-        //Row 0
+        <!--Row 0-->
 
         <Button
             android:id="@+id/grid00"
@@ -73,7 +73,7 @@
             android:layout_gravity="fill"
             android:text="@string/button" />
 
-        //Row 1
+        <!--Row 1-->
 
         <Button
             android:id="@+id/grid01"
@@ -108,7 +108,7 @@
             android:layout_gravity="fill"
             android:text="@string/button" />
 
-        //Row 2
+        <!--Row 2-->
 
         <Button
             android:id="@+id/grid02"
@@ -143,7 +143,7 @@
             android:layout_gravity="fill"
             android:text="@string/button" />
 
-        //Row 3
+        <!--Row 3-->
 
         <Button
             android:id="@+id/grid03"
@@ -178,7 +178,7 @@
             android:layout_gravity="fill"
             android:text="@string/button" />
 
-        //Row 4
+        <!--Row 4-->
 
         <Button
             android:id="@+id/grid04"
@@ -213,7 +213,7 @@
             android:layout_gravity="fill"
             android:text="@string/button" />
 
-        //Row 5
+        <!--Row 5-->
 
         <Button
             android:id="@+id/grid05"
@@ -263,7 +263,7 @@
         android:layout_marginTop="62dp"
         android:layout_marginEnd="299dp"
         android:layout_marginRight="299dp"
-        android:text="GoalCounter: "
+        android:text="@string/goalcounter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_toolbar" />
 
@@ -291,7 +291,7 @@
         android:layout_marginEnd="38dp"
         android:layout_marginRight="38dp"
         android:layout_marginBottom="-1dp"
-        android:text="Move Counter: "
+        android:text="@string/move_counter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -310,7 +310,7 @@
         android:layout_centerInParent="true"
         android:background="@android:color/darker_gray"
         android:gravity="center"
-        android:text="Player"
+        android:text="@string/player"
         tools:layout_editor_absoluteX="104dp"
         tools:layout_editor_absoluteY="478dp" />
 
