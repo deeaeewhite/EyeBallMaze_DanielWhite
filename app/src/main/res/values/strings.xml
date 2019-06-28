@@ -3,5 +3,7 @@
     <string name="button">Button</string>
     <string name="player">Player</string>
     <string name="move_counter">Move Counter:</string>
-    <string name="goalcounter">GoalCounter:</string>
+    <string name="goal_counter">GoalCounter:</string>
+    <string name="buttonLength">75dp</string>
+
 </resources>
