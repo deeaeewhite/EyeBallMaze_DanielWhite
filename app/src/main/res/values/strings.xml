@@ -8,6 +8,6 @@
     <integer name="buttonSize">150</integer>
     <string name="gameWon">Contratulation you have solved the maze!</string>
     <string name="gameLost">Better luck next time!</string>
-    <string name="textview">TextView</string>
-    <string name="togglebutton">ToggleButton</string>
+    <string name="textView">TextView</string>
+    <string name="toggleButton">ToggleButton</string>
 </resources>

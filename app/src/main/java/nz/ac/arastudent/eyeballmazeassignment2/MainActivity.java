@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity{
 
     Button[][] buttons = new Button[6][4];
     MediaPlayer game_song;
+    MediaPlayer winner_music;
+    MediaPlayer loser_music;
     ToggleButton sound_toggle;
 
     SharedPreferences sharedPreferences = null;
@@ -143,6 +145,18 @@ public class MainActivity extends AppCompatActivity{
         //unmute audio
         AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+    }
+
+    public void playWinnerMusic(){
+        winner_music=MediaPlayer.create(this, R.raw.winner);
+        winner_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        winner_music.start();
+    }
+
+    public void playLoserMusic(){
+        loser_music=MediaPlayer.create(this, R.raw.loser);
+        loser_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        loser_music.start();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -320,7 +334,9 @@ public class MainActivity extends AppCompatActivity{
 
         GridLayout grid =  findViewById(R.id.GameLayout);
         int gridWidth = grid.getWidth();
+        int width = gridWidth / 10;
         int gridHeight = grid.getHeight();
+        int height = gridHeight / 6;
 
         TextView moveCounter = findViewById(R.id.moveCounter);
         moveCounter.setText(myModel.getMoveCount());
@@ -346,6 +362,7 @@ public class MainActivity extends AppCompatActivity{
         builder.setTitle(R.string.gameWon)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        playWinnerMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();
@@ -368,6 +385,7 @@ public class MainActivity extends AppCompatActivity{
         builder.setTitle(R.string.gameLost)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        playLoserMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();

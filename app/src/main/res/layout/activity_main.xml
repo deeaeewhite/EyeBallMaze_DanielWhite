@@ -301,7 +301,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="38dp"
-        android:text="@string/textview" />
+        android:text="@string/textView" />
 
     <TextView
         android:id="@+id/playerNo1"
@@ -326,7 +326,7 @@
         android:layout_marginEnd="76dp"
         android:layout_marginRight="76dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/togglebutton" />
+        android:text="@string/toggleButton" />
 
 </RelativeLayout>
 
