@@ -1,7 +1,7 @@
 package nz.ac.arastudent.eyeballmazeassignment2;
 
-import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -9,14 +9,14 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,9 +33,6 @@ import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 public class MainActivity extends AppCompatActivity{
 
     Button[][] buttons = new Button[6][4];
-    String THE_MAP = "";
-    String MOVES = "";
-    String GOALS_LEFT = "";
     MediaPlayer game_song;
     ToggleButton sound_toggle;
 
@@ -133,6 +130,7 @@ public class MainActivity extends AppCompatActivity{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        myModel.setMoveCount("0");
     }
 
     private void mute() {
@@ -149,11 +147,11 @@ public class MainActivity extends AppCompatActivity{
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
-        String map;
-        map = sharedPreferences.getString(THE_MAP, "None");
-
-        String[] rows = ":".split(Objects.requireNonNull(sharedPreferences.getString(THE_MAP, "None")));
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        String map = sharedPreferences.getString("theMap", "None");
+        System.out.println(map);
+        String[] rows = map.split(":");
 
         int y = 0;
         for (String aRow : rows){
@@ -167,17 +165,12 @@ public class MainActivity extends AppCompatActivity{
             }
             y++;
         }
-        System.out.println(sharedPreferences.getString(MOVES, "None"));
-       // myModel.setMoveCount(sharedPreferences.getString(MOVES, "None"));
-        //myModel.setGoalCount(sharedPreferences.getString(GOALS_LEFT, "None"));
+        myModel.setMoveCount(sharedPreferences.getString("movesLeft", "None"));
+        myModel.setGoalCount(sharedPreferences.getString("goalsLeft", "None"));
 
         Toast.makeText(MainActivity.this, "Game Loaded!", Toast.LENGTH_SHORT).show();
     }
 
-    private void loadMoves() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
-        myModel.setMoveCount(sharedPreferences.getString(MOVES, "None"));
-    }
     private void saveLevel() {
         String[][] currentState = myModel.getGameMap();
         StringBuilder myMap = new StringBuilder();
@@ -185,7 +178,6 @@ public class MainActivity extends AppCompatActivity{
         for (int y = 0; y < currentState.length; ++y) {
             for (int x = 0; x < currentState[y].length; ++x) {
                 String pos = currentState[y][x];
-                System.out.println(pos + ":");
                 myMap.append(pos);
                 if (x != currentState[y].length) {
                     myMap.append(",");
@@ -196,15 +188,16 @@ public class MainActivity extends AppCompatActivity{
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
-        editor.putString(THE_MAP, myMap.toString());
+        editor.putString("theMap", myMap.toString());
         editor.apply();
-        editor.putString(GOALS_LEFT, myModel.getGoalCount());
+        editor.putString("goalsLeft", myModel.getGoalCount());
         editor.apply();
-        editor.putString(MOVES, myModel.getMoveCount());
+        editor.putString("movesLeft", myModel.getMoveCount());
         editor.apply();
 
         Toast.makeText(MainActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
@@ -227,9 +220,6 @@ public class MainActivity extends AppCompatActivity{
             loadLevel();
             this.myModel.updateMaze();
             updateGame();
-            loadMoves();
-            this.myModel.updateMaze();
-            updateGame();
         }
 
         if(id == R.id.action_save){
@@ -250,16 +240,24 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void updateGame(){
+        GridLayout grid =  findViewById(R.id.GameLayout);
+        int gridWidth = grid.getWidth();
+        int width = gridWidth / 10;
+        int gridHeight = grid.getHeight();
+        int height = gridHeight / 6;
+
         for(int y = 0; y < this.buttons.length; y++){
             for(int x = 0; x < this.buttons[y].length; x++){
                 Button aButton = this.buttons[y][x];
                 aButton.setText(this.myModel.getItem(x, y));
+                aButton.setWidth(height);
+                aButton.setHeight(height);
             }
         }
         TextView textView = findViewById(R.id.GoalCounter);
         textView.setText(myModel.getGoalCount());
 
-        TextView moveCounter = findViewById(R.id.MoveCounter);
+        TextView moveCounter = findViewById(R.id.moveCounter);
         moveCounter.setText(myModel.getMoveCount());
     }
 
@@ -305,8 +303,11 @@ public class MainActivity extends AppCompatActivity{
             }
             //check if complete
             if (myModel.isComplete()){
-                Toast.makeText(getApplicationContext(),
-                        "You have solved it", Toast.LENGTH_SHORT).show();
+                if(myModel.getGoalCount() == "0") {
+                    gameWonDialog();
+                } else if (myModel.getMovesLeft() == 0) {
+                    gameLostDialog();
+                }
             }
             updateGame();
         }
@@ -317,7 +318,13 @@ public class MainActivity extends AppCompatActivity{
         TextView textView = findViewById(R.id.GoalCounter);
         textView.setText(myModel.getGoalCount());
 
-        TextView moveCounter = findViewById(R.id.MoveCounter);
+        GridLayout grid =  findViewById(R.id.GameLayout);
+        int gridWidth = grid.getWidth();
+        int width = gridWidth / 10;
+        int gridHeight = grid.getHeight();
+        int height = gridHeight / 6;
+
+        TextView moveCounter = findViewById(R.id.moveCounter);
         moveCounter.setText(myModel.getMoveCount());
 
         for(int y = 0; y < this.buttons.length; y++){
@@ -335,6 +342,47 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    public void gameWonDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        builder.setTitle(R.string.gameWon)
+                .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        readALevel();
+                        myModel.updateMaze();
+                        updateGame();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void gameLostDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.gameLost)
+                .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        readALevel();
+                        myModel.updateMaze();
+                        updateGame();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

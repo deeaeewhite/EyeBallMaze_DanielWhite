@@ -14,10 +14,11 @@ public interface IGame {
 	boolean isComplete();
 	String getItem(int x, int y);
 	Integer[] getPlayerLocation();
-    String getGoalCount();
+	String getGoalCount();
 	void setGoalCount(String goalCount);
-    String getMoveCount();
+	String getMoveCount();
 	void setMoveCount(String moveCount);
-    void setMazeCharacter(int x, int y, String item);
+	void setMazeCharacter(int x, int y, String item);
 	String[][] getGameMap();
+	Integer getMovesLeft();
 }
