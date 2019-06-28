@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
     private void readALevel() {
         final String originalFileSrc = "level.txt";
         try {
-            InputStream inputStream = getResources().openRawResource(R.raw.level);
+            InputStream inputStream;
+            inputStream = getResources().openRawResource(R.raw.level);
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
