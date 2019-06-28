@@ -11,15 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:layout_alignParentLeft="true" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <GridLayout
         android:id="@+id/GameLayout"
@@ -257,9 +259,6 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/game_toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignStart="@+id/MoveCounter"
         android:layout_alignLeft="@+id/MoveCounter"
         android:layout_alignParentTop="true"
@@ -278,12 +277,7 @@
         android:id="@+id/GoalCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/game_toolbar"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/game_toolbar" />
 
@@ -291,15 +285,14 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/game_toolbar"
-        android:layout_marginStart="46dp"
-        android:layout_marginLeft="46dp"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_alignLeft="@+id/textView2"
         android:layout_alignTop="@+id/textView2"
         android:layout_alignEnd="@+id/game_toolbar"
         android:layout_alignRight="@+id/game_toolbar"
         android:layout_alignBottom="@+id/textView2"
-        android:layout_toEndOf="@+id/GoalCounter"
-        android:layout_toRightOf="@+id/GoalCounter"
+        android:layout_marginStart="269dp"
+        android:layout_marginLeft="269dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="38dp"
         android:layout_marginRight="38dp"
@@ -312,23 +305,34 @@
         android:id="@+id/MoveCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/game_toolbar"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        android:layout_toRightOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/playerNo1"
-        android:layout_width="@string/buttonLength"
-        android:layout_height="@string/buttonLength"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:background="@android:color/darker_gray"
         android:gravity="center"
         android:text="@string/player"
         tools:layout_editor_absoluteX="104dp"
         tools:layout_editor_absoluteY="478dp" />
+
+    <ToggleButton
+        android:id="@+id/sound_toggle"
+        android:layout_width="56dp"
+        android:layout_height="35dp"
+        android:layout_alignTop="@+id/game_toolbar"
+        android:layout_alignEnd="@+id/game_toolbar"
+        android:layout_alignRight="@+id/game_toolbar"
+        android:layout_alignBottom="@+id/game_toolbar"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginRight="76dp"
+        android:layout_marginBottom="10dp"
+        android:text="ToggleButton" />
 
 </RelativeLayout>
 

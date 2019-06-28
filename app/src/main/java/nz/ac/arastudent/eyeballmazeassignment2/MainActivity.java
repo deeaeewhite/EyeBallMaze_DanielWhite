@@ -1,8 +1,11 @@
 package nz.ac.arastudent.eyeballmazeassignment2;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -12,8 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,20 +30,41 @@ import java.util.Objects;
 import nz.ac.arastudent.eyeballmazeassignment2.model.IGame;
 import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     Button[][] buttons = new Button[6][4];
     String THE_MAP = "";
     String MOVES = "";
     String GOALS_LEFT = "";
+    MediaPlayer game_song;
+    ToggleButton sound_toggle;
 
     SharedPreferences sharedPreferences = null;
 
     public IGame myModel = new Model();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        game_song=MediaPlayer.create(this, R.raw.lifeforce);
+        game_song.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        game_song.setLooping(true);
+        game_song.start();
+
+        sound_toggle = findViewById(R.id.sound_toggle);
+        sound_toggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(sound_toggle.isChecked()){
+                    unmute();
+                }
+                else{
+                    mute();
+                }
+            }
+        });
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -106,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void mute() {
+        //mute audio
+        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+    }
+
+    public void unmute() {
+        //unmute audio
+        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -295,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
 
 }
