@@ -393,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle(R.string.gameLost)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playLoserMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();
