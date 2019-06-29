@@ -134,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
         loser_music.start();
     }
 
+    public void stopMediaPlayer(){
+        gameSong.stop();
+        winner_music.stop();
+        loser_music.stop();
+    }
 
 
     private void readALevel() {
@@ -385,9 +390,16 @@ public class MainActivity extends AppCompatActivity {
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.winner);
+        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        gameSong.start();
     }
 
     public void gameLostDialog(){
+        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.loser);
+        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        gameSong.start();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.gameLost)

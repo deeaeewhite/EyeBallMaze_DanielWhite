@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Eye Ball Maze Assignment 2</string>
+    <string name="app_name">Eye Ball Maze</string>
     <string name="button">Button</string>
-    <string name="buttonLength">80dp</string>
-    <string name="buttonSize">80dp</string>
+    <string name="buttonWidth">1</string>
+    <string name="buttonHeight">1</string>
     <string name="gameWon">Contratulation you have solved the maze!</string>
     <string name="gameLost">Better luck next time!</string>
 </resources>
