@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,26 +17,23 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.List;
-import java.util.Scanner;
+
 import nz.ac.arastudent.eyeballmazeassignment2.model.IGame;
 import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 
 public class MainActivity extends AppCompatActivity {
 
     Button[][] buttons = new Button[6][4];
+    MediaPlayer gameSong;
+    MediaPlayer winner_music;
+    MediaPlayer loser_music;
+    ToggleButton soundToggle;
 
     SharedPreferences sharedPreferences = null;
 
@@ -43,6 +42,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.lifeforce);
+        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        gameSong.setLooping(true);
+        gameSong.start();
+
+        soundToggle = findViewById(R.id.soundToggle);
+        soundToggle.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(soundToggle.isChecked()){
+                    unmute();
+                }
+                else{
+                    mute();
+                }
+            }
+        });
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -90,6 +108,34 @@ public class MainActivity extends AppCompatActivity {
         this.initialiseGame();
     }
 
+    private void mute() {
+        //mute audio
+        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+    }
+
+    public void unmute() {
+        //unmute audio
+        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+    }
+
+    public void playWinnerMusic(){
+        gameSong.release();
+        winner_music=MediaPlayer.create(this, R.raw.winner);
+        winner_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        winner_music.start();
+    }
+
+    public void playLoserMusic(){
+        gameSong.release();
+        loser_music=MediaPlayer.create(this, R.raw.loser);
+        loser_music.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        loser_music.start();
+    }
+
+
+
     private void readALevel() {
         try {
             InputStream inputStream = getResources().openRawResource(R.raw.level);
@@ -115,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         myModel.setMoveCount("0");
+        myModel.setMovesLeft("10");
     }
 
     private void loadLevel() {
@@ -250,6 +297,10 @@ public class MainActivity extends AppCompatActivity {
         //   Toast.makeText(getApplicationContext(),
         //         "You can only move left, right or forward", Toast.LENGTH_SHORT).show();
         //}
+        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY && x < currentX || y > currentY && x > currentX) {
+            Toast.makeText(getApplicationContext(),
+                    "You can't move diagonal, only left, right or forward.", Toast.LENGTH_SHORT).show();
+        }
         else {
             if (y < currentY) {
                 direction = "W";
@@ -265,9 +316,6 @@ public class MainActivity extends AppCompatActivity {
                 distance = x - currentX;
             }
 
-            this.myModel.updateMaze();
-
-
             //check move isn't backwards
             String isBackwards = this.myModel.makeMove(direction, distance);
 
@@ -277,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             }
             //check if complete
             if (myModel.isComplete()){
-                if(myModel.getGoalCount() == "0") {
+                if(Integer.parseInt(myModel.getGoalCount()) == 0) {
                     gameWonDialog();
                 } else if (myModel.getMovesLeft() == 0) {
                     gameLostDialog();
@@ -339,12 +387,13 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void gameLostDialog() {
+    public void gameLostDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.gameLost)
                 .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        playLoserMusic();
                         readALevel();
                         myModel.updateMaze();
                         updateGame();

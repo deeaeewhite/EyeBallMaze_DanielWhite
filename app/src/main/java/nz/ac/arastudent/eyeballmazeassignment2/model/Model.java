@@ -141,16 +141,23 @@ public class Model implements IGame {
 		//String[] theirInput = move.split("");
 		Direction direction = Direction.get(move);
 		String out = "Can not move backwards";
+		boolean validMove = true;
 		int spaces = space;
 		if (this.isNotMovingBackwards(direction)){
-			moveCounter++;
-			if (direction == Direction.Down) { this.moveVertical(spaces, PlayerDirection.Down);}
-			if (direction == Direction.Up) { this.moveVertical(-spaces, PlayerDirection.Up);}
 
-			if (direction == Direction.Left) { this.moveHorizontal(-spaces, PlayerDirection.Left);}
-			if (direction == Direction.Right) { this.moveHorizontal(spaces, PlayerDirection.Right);}
-			out = "";
-			movesLeft-=1;
+			if (direction == Direction.Down) { validMove = this.moveVertical(spaces, PlayerDirection.Down);}
+			else if (direction == Direction.Up) { validMove = this.moveVertical(-spaces, PlayerDirection.Up);}
+
+			else if (direction == Direction.Left) { validMove = this.moveHorizontal(-spaces, PlayerDirection.Left);}
+			else if (direction == Direction.Right) { validMove = this.moveHorizontal(spaces, PlayerDirection.Right);}
+
+			if (validMove == false){
+				out = "You can only move to a square of same Shape or Colour!";
+			} else {
+				movesLeft -= 1;
+				moveCounter++;
+				out = "";
+			}
 		}
 
 		this.updateMaze();
@@ -165,9 +172,9 @@ public class Model implements IGame {
 		return out;
 	}
 
-	private void moveHorizontal(int spaces, PlayerDirection playerDirection){
+	private boolean moveHorizontal(int spaces, PlayerDirection playerDirection){
 		int movingTo = player.x + spaces;
-
+		boolean out = true;
 		Object[] newLocation = whatsAt(movingTo, player.y);
 
 		if (newLocation.length < 2){
@@ -209,13 +216,14 @@ public class Model implements IGame {
 				sb2.insert(2, player.looking.getAbbreviation());
 				GameMap[player.y][movingTo] = sb2.toString();
 
-			} else { System.out.println("Invalid Move");}
+			} else { out = false;}
 		}
+		return out;
 	}
 
-	private void moveVertical(int spaces, PlayerDirection playerDirection){
+	private boolean moveVertical(int spaces, PlayerDirection playerDirection){
 		int movingTo = player.y + spaces;
-
+		boolean out = true;
 		Object[] newLocation = whatsAt(player.x, movingTo);
 
 		if (newLocation.length < 2){
@@ -257,8 +265,10 @@ public class Model implements IGame {
 				sb2.insert(2, player.looking.getAbbreviation());
 				GameMap[movingTo][player.x] = sb2.toString();
 
-			} else { System.out.println("Invalid Move2");}
+			} else { out = false;}
+
 		}
+		return out;
 	}
 
 	public void updateMove(){
