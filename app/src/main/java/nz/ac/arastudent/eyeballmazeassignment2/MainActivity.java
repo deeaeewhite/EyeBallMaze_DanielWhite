@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView player01 = findViewById(R.id.player01);
         player01.setImageResource(R.drawable.playerchar);
         player01.setX(0);
-        player01.setX(1);
+        player01.setY(1);
 
         soundToggle = findViewById(R.id.soundToggle);
         soundToggle.setOnClickListener(new View.OnClickListener() {
@@ -73,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Button selectedButton = findViewById(R.id.GameLayout);
-        selectedButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                updatePlayer();
-                myModel.isComplete();
-            }});
+//        Button selectedButton = findViewById(R.id.GameLayout);
+//        selectedButton.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v){
+//                updatePlayer();
+//                myModel.isComplete();
+//            }});
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -143,17 +143,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updatePlayerLocation(){
-        ImageView player01 = findViewById(R.id.player01);
-        Integer newX = getPosXY[0];
-        Integer newY = getPosXY[1];
-        player01.setX(newX);
-        player01.setY(newY);
-    }
+//    public void updatePlayerLocation(){
+//        ImageView player01 = findViewById(R.id.player01);
+//        Integer newX = getPosXY[0];
+//        Integer newY = getPosXY[1];
+//        player01.setX(newX);
+//        player01.setY(newY);
+//    }
 
     public void updatePlayer(){
         ImageView player01 = findViewById(R.id.player01);
-        updatePlayerLocation();
+//        updatePlayerLocation();
         updatePlayerDirection();
     }
 
@@ -334,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView movesLeft = findViewById(R.id.movesLeft);
         movesLeft.setText(myModel.getMovesLeft().toString());
+        updatePlayer();
     }
 
     public void checkMove(int x, int y){
