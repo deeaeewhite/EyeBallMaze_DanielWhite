@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -35,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer winner_music;
     MediaPlayer loser_music;
     ToggleButton soundToggle;
-    ImageButton player01;
+    ImageView player01;
+    Integer[] getPosXY;
 
     SharedPreferences sharedPreferences = null;
 
@@ -49,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
         gameSong.setLooping(true);
         gameSong.start();
+
+        ImageView player01 = findViewById(R.id.player01);
+        player01.setImageResource(R.drawable.playerchar);
+        player01.setX(0);
+        player01.setX(1);
 
         soundToggle = findViewById(R.id.soundToggle);
         soundToggle.setOnClickListener(new View.OnClickListener() {
@@ -64,24 +71,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        player01 = findViewById(R.id.player01);
-        player01.setOnClickListener(new View.OnClickListener(){
+
+
+        Button selectedButton = findViewById(R.id.GameLayout);
+        selectedButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                player01.setImageResource(R.drawable.playerChar);
-                myModel.getPlayerLocation();
-                if(myModel.getPlayerDirection() == "U"){
-                    player01.setRotation(90);
-                }
-                else if(myModel.getPlayerDirection() == "L"){
-                    player01.setRotation(180);
-                }
-                else if(myModel.getPlayerDirection() == "R"){
-                    player01.setRotation(-90);
-                }
-                else if(myModel.getPlayerDirection() == "D"){
-                    player01.setRotation(-180);
-                }
-                updateGame();
+                updatePlayer();
                 myModel.isComplete();
             }});
 
@@ -129,6 +124,37 @@ public class MainActivity extends AppCompatActivity {
 
 
         this.initialiseGame();
+    }
+
+    public void updatePlayerDirection(){
+        String direction = myModel.getPlayerDirection();
+        ImageView player01 = findViewById(R.id.player01);
+        if(direction == "U"){
+            player01.setRotation(0);
+        }
+        else if(direction == "L"){
+            player01.setRotation(-90);
+        }
+        else if(direction == "R"){
+            player01.setRotation(90);
+        }
+        else if(direction == "D"){
+            player01.setRotation(180);
+        }
+    }
+
+    public void updatePlayerLocation(){
+        ImageView player01 = findViewById(R.id.player01);
+        Integer newX = getPosXY[0];
+        Integer newY = getPosXY[1];
+        player01.setX(newX);
+        player01.setY(newY);
+    }
+
+    public void updatePlayer(){
+        ImageView player01 = findViewById(R.id.player01);
+        updatePlayerLocation();
+        updatePlayerDirection();
     }
 
     private void mute() {
@@ -352,8 +378,8 @@ public class MainActivity extends AppCompatActivity {
                         isBackwards, Toast.LENGTH_SHORT).show();
             }
             //check if complete
-            if (myModel.isComplete()){
-                if(Integer.parseInt(myModel.getGoalCount()) == 0) {
+            if (myModel.isComplete()) {
+                if (Integer.parseInt(myModel.getGoalCount()) == 0) {
                     gameWonDialog();
                 } else if (myModel.getMovesLeft() == 0) {
                     gameLostDialog();
@@ -384,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
             for(int x = 0; x < this.buttons[y].length; x++){
                 Button aButton = this.buttons[y][x];
                 aButton.setText(this.myModel.getItem(x, y));
-
                 final int weirdX = x;
                 final int weirdY = y;
                 aButton.setOnClickListener(new View.OnClickListener() {
