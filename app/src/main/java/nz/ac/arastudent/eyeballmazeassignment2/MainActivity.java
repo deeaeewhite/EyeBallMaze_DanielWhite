@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer loser_music;
     ToggleButton soundToggle;
     ImageView player01;
-    Integer[] getPosXY;
+    Button getButton;
 
     SharedPreferences sharedPreferences = null;
 
@@ -54,8 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView player01 = findViewById(R.id.player01);
         player01.setImageResource(R.drawable.playerchar);
-        player01.setX(0);
-        player01.setY(1);
+        Integer[] currentPlayerLocation = myModel.getPlayerLocation();
+        Integer currentX = currentPlayerLocation[0];
+        Integer currentY = currentPlayerLocation[1];
+        player01.setX(currentX);
+        player01.setY(currentY);
 
         soundToggle = findViewById(R.id.soundToggle);
         soundToggle.setOnClickListener(new View.OnClickListener() {
@@ -70,15 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-//        Button selectedButton = findViewById(R.id.GameLayout);
-//        selectedButton.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v){
-//                updatePlayer();
-//                myModel.isComplete();
-//            }});
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -143,13 +139,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void updatePlayerLocation(){
-//        ImageView player01 = findViewById(R.id.player01);
-//        Integer newX = getPosXY[0];
-//        Integer newY = getPosXY[1];
-//        player01.setX(newX);
-//        player01.setY(newY);
+//    Point point = getPointOfView(getbutton);
+//    private Point getPointOfView(View view) {
+//        int[] location = new int[2];
+//        view.getLocationInWindow(location);
+//        return new Point(location[0], location[1]);
 //    }
+
+    public void updatePlayerLocation(){
+        ImageView player01 = findViewById(R.id.player01);
+        Float newX = getButton.getX();
+        Float newY = getButton.getY();
+        player01.setX(newX);
+        player01.setY(newY);
+
+    }
+
 
     public void updatePlayer(){
         ImageView player01 = findViewById(R.id.player01);
@@ -219,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
         System.out.println(map);
         String[] rows = map.split(":");
@@ -395,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void initialiseGame(){
         this.myModel.updateMaze();
-        TextView textView = findViewById(R.id.GoalCounter);
+        final TextView textView = findViewById(R.id.GoalCounter);
         textView.setText(myModel.getGoalCount());
 
         GridLayout grid =  findViewById(R.id.GameLayout);
@@ -409,7 +415,8 @@ public class MainActivity extends AppCompatActivity {
 
         for(int y = 0; y < this.buttons.length; y++){
             for(int x = 0; x < this.buttons[y].length; x++){
-                Button aButton = this.buttons[y][x];
+                final Button aButton = this.buttons[y][x];
+                getButton = aButton;
                 aButton.setText(this.myModel.getItem(x, y));
                 final int weirdX = x;
                 final int weirdY = y;
