@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer winner_music;
     MediaPlayer loser_music;
     ToggleButton soundToggle;
+    ImageButton player01;
 
     SharedPreferences sharedPreferences = null;
 
@@ -61,6 +63,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        player01 = findViewById(R.id.player01);
+        player01.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                player01.setImageResource(R.drawable.playerChar);
+                myModel.getPlayerLocation();
+                if(myModel.getPlayerDirection() == "U"){
+                    player01.setRotation(90);
+                }
+                else if(myModel.getPlayerDirection() == "L"){
+                    player01.setRotation(180);
+                }
+                else if(myModel.getPlayerDirection() == "R"){
+                    player01.setRotation(-90);
+                }
+                else if(myModel.getPlayerDirection() == "D"){
+                    player01.setRotation(-180);
+                }
+                updateGame();
+                myModel.isComplete();
+            }});
 
         //Set tool bar
         Toolbar myToolbar = findViewById(R.id.game_toolbar);
@@ -339,6 +362,9 @@ public class MainActivity extends AppCompatActivity {
             updateGame();
         }
     }
+
+
+
 
     public void initialiseGame(){
         this.myModel.updateMaze();

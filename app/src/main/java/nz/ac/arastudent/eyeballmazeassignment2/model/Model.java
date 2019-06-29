@@ -115,6 +115,10 @@ public class Model implements IGame {
 		return coords;
 	}
 
+	public String getPlayerDirection(){
+		return player.looking.getAbbreviation();
+	}
+
 	public String getItem(int x, int y){
 		return GameMap[y][x];
 	}

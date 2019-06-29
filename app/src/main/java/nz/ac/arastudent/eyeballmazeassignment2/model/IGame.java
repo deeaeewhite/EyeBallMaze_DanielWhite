@@ -22,4 +22,5 @@ public interface IGame {
 	void setMazeCharacter(int x, int y, String item);
 	String[][] getGameMap();
 	Integer getMovesLeft();
+	String getPlayerDirection();
 }

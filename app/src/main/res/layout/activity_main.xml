@@ -345,4 +345,10 @@
         android:checked="true"/>
 
 
+    <ImageButton
+        android:id="@+id/player01"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:="playerChar" />
+
 </RelativeLayout>
