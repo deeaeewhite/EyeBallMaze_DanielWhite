@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,7 +92,51 @@ public class ManualLayoutActivity extends MainActivity {
         this.initialiseGame();
     }
 
-    
+    public void updatePlayerDirection(){
+        String direction = myModel.getPlayerDirection();
+        ImageView player01 = findViewById(R.id.player01);
+        if(direction == "U"){
+            player01.setRotation(0);
+        }
+        else if(direction == "L"){
+            player01.setRotation(-90);
+        }
+        else if(direction == "R"){
+            player01.setRotation(90);
+        }
+        else if(direction == "D"){
+            player01.setRotation(180);
+        }
+    }
+
+//    Point point = getPointOfView(getButton);
+//
+//    private Point getPointOfView(View view) {
+//        location = new int[2];
+//        view.getLocationInWindow(location);
+//        return new Point(location[0], location[1]);
+//    }
+
+
+    public void updatePlayerLocation(){
+
+//        ImageView player01 = findViewById(R.id.player01);
+//        int newX = location[0];
+//        int newY = location[1];
+//        Float newX = getButton.getX();
+//        Float newY = getButton.getY();
+//        player01.setX(newX);
+//        player01.setY(newY);
+
+
+    }
+
+
+    public void updatePlayer(){
+        ImageView player01 = findViewById(R.id.player01);
+        updatePlayerLocation();
+        updatePlayerDirection();
+    }
 
     private void readALevel() {
         try {
@@ -240,6 +285,7 @@ public class ManualLayoutActivity extends MainActivity {
 
         TextView movesLeft = findViewById(R.id.movesLeft);
         movesLeft.setText(myModel.getMovesLeft().toString());
+        updatePlayer();
     }
 
     public void checkMove(int x, int y){
